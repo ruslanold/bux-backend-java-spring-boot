@@ -1,8 +1,8 @@
 package com.project.myproject.enums;
 
 public enum ERole implements IDbvalue<String>{
-    ADMIN("ROLE_ADMIN"),
-    MODERATOR("ROLE_MODERATOR"),
+    ADMIN("ROLE_PRINCEPS"),
+    MODERATOR("ROLE_PRAETOR"),
     USER("ROLE_USER");
 
     private String name;

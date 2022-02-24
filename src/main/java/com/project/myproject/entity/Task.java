@@ -1,6 +1,8 @@
 package com.project.myproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.myproject.converter.GeoFilterValueConverter;
+import com.project.myproject.enums.EGeoFilter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,16 +30,55 @@ public class Task extends BaseEntity {
     private String title;
     @NotBlank
     private String description;
+    @NotBlank
+    private String descForApproval;
+
+
+    private int notWorkOnDaysOfWeek;
+
+    // 0 - doesn't use geo, 1 - show only in this country, 2 - it must not show in this countries
+    @Convert(converter = GeoFilterValueConverter.class)
+    private EGeoFilter geoFilter;
+
+    @Positive
+    private int workTime;
+
+    @Column(name="\"repeat\"")
+    private boolean repeat;
+    private int repeatTime;
+    private boolean repeatBeforeCheck;
+
+    private boolean enabled;
+
+
+    @Column(scale=4)
+    private BigDecimal balance;
 
     @Positive
     @NotNull
-    private double price;
+    @Column(precision=10, scale=4)
+    private BigDecimal price;
 
-    //private boolean repeat;
+    @Positive
+    @NotNull
+    @Column(precision=10, scale=4)
+    private BigDecimal priceWithCommission;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "task_urls",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "url_id"))
+    private List<URL> urls = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "task_countries",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "country_id"))
+    private List<Country> countries = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "status_id")
-    private Status status;
+    private ModerationStatus status;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")

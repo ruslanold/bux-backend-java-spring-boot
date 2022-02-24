@@ -1,6 +1,7 @@
 package com.project.myproject.enums;
 
-public enum EStatus implements IDbvalue<String>{
+public enum EModerationStatus implements IDbvalue<String>{
+    DRAFT("DRAFT"),
     PENDING("PENDING"),
     REWORKING("REWORKING"),
     APPROVED("APPROVED"),
@@ -8,7 +9,7 @@ public enum EStatus implements IDbvalue<String>{
 
     private String name;
 
-    EStatus(String name) {
+    EModerationStatus(String name) {
         this.name = name;
     }
 

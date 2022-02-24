@@ -2,60 +2,67 @@ package com.project.myproject.validation;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.stream.Stream;
+import javax.validation.ConstraintValidatorContext;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(MockitoExtension.class)
 public class PasswordValidatorTest {
-    @ParameterizedTest(name = "#{index} - Run test with password = {0}")
-    @MethodSource("validPasswordProvider")
-    void test_password_regex_valid(String password) {
+
+    @Mock
+    private ValidPassword validPassword;
+
+    @Mock
+    private ConstraintValidatorContext constraintValidatorContext;
+
+    @Test
+    void invalidPassword(){
+        //given
         PasswordValidator passwordValidator = new PasswordValidator();
-        assertTrue(passwordValidator.isValid(password));
+        passwordValidator.initialize(validPassword);
+
+
+        //when
+        boolean empty = passwordValidator.isValid(" ", constraintValidatorContext);
+        boolean empty1 = passwordValidator.isValid("", constraintValidatorContext);
+        boolean shortPass = passwordValidator.isValid("asdasdf", constraintValidatorContext);
+        boolean longPass = passwordValidator.isValid("asdfghjkloiuytredfvcx", constraintValidatorContext);
+        boolean space = passwordValidator.isValid(" aasdfgh", constraintValidatorContext);
+        boolean space1 = passwordValidator.isValid("asdfghd ", constraintValidatorContext);
+        boolean space3 = passwordValidator.isValid("saa sdfg", constraintValidatorContext);
+
+        //then
+        assertFalse(empty, "invalid, empty");
+        assertFalse(empty1, "invalid, empty");
+        assertFalse(shortPass, "invalid, short password");
+        assertFalse(longPass, "invalid, long password");
+        assertFalse(space, "invalid, password contains spaces");
+        assertFalse(space1, "invalid, password contains spaces");
+        assertFalse(space3, "invalid, password contains spaces");
+
     }
 
-    @ParameterizedTest(name = "#{index} - Run test with password = {0}")
-    @MethodSource("invalidPasswordProvider")
-    void test_password_regex_invalid(String password) {
-        assertFalse(PasswordValidator.isValid(password));
+
+
+    @Test
+    void validPassword(){
+        //given
+        PasswordValidator passwordValidator = new PasswordValidator();
+        passwordValidator.initialize(validPassword);
+
+        //when
+        boolean length = passwordValidator.isValid("0123456789$abcdefgAB",constraintValidatorContext);
+        boolean length1 = passwordValidator.isValid("123Aa$Aa",constraintValidatorContext);
+
+
+        //then
+        assertTrue(length, "valid, 20 characters");
+        assertTrue(length1, "valid, 8 characters");
+
     }
 
-    static Stream<String> validPasswordProvider() {
-        return Stream.of(
-                "AAAbbbccc@123",
-                "Hello world$123",
-                "A!@#&()–a1",               // test punctuation part 1
-                "A[{}]:;',?/*a1",           // test punctuation part 2
-                "A~$^+=<>a1",               // test symbols
-                "0123456789$abcdefgAB",     // test 20 chars
-                "123Aa$Aa"                  // test 8 chars
-        );
-    }
-
-    // At least
-    // one lowercase character,
-    // one uppercase character,
-    // one digit,
-    // one special character
-    // and length between 8 to 20.
-    static Stream<String> invalidPasswordProvider() {
-        return Stream.of(
-                "12345678",                 // invalid, only digit
-                "abcdefgh",                 // invalid, only lowercase
-                "ABCDEFGH",                 // invalid, only uppercase
-                "abc123$$$",                // invalid, at least one uppercase
-                "ABC123$$$",                // invalid, at least one lowercase
-                "ABC$$$$$$",                // invalid, at least one digit
-                "java REGEX 123",           // invalid, at least one special character
-                "java REGEX 123 %",         // invalid, % is not in the special character group []
-                "________",                 // invalid
-                "--------",                 // invalid
-                " ",                        // empty
-                "");                        // empty
-    }
 }

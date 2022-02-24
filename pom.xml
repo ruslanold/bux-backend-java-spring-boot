@@ -69,8 +69,20 @@
 			<artifactId>aws-java-sdk</artifactId>
 			<version>1.11.989</version>
 		</dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
 
-	</dependencies>
+		<!-- https://mvnrepository.com/artifact/payeer/payeer -->
+		<dependency>
+			<groupId>payeer</groupId>
+			<artifactId>payeer</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

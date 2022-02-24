@@ -1,23 +1,23 @@
 package com.project.myproject.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class TaskDto {
     private long id;
     private String title;
     private String description;
-    private double price;
-    private TaskUserDto user;
-    @JsonProperty(value = "category_id")
+    private String descForApproval;
+    private String priceWithCommission;
+    private TaskUserInfoDto user;
     private int categoryId;
-    @JsonProperty(value = "reports_status")
     private List<TaskReportStatusDto> reportsStatus;
 }

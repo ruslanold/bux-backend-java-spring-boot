@@ -1,10 +1,15 @@
 package com.project.myproject.entity;
 
+import com.project.myproject.enums.EModerationStatus;
+import jdk.jfr.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,11 +20,11 @@ public class Report extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String body;
-    @Enumerated(EnumType.STRING)
-
+    @JoinColumn(name = "expires at")
+    private OffsetDateTime expiresAt;
     @OneToOne
     @JoinColumn(name = "status_id")
-    private Status status;
+    private ModerationStatus status;
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,7 +1,7 @@
 package com.project.myproject.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.project.myproject.enums.EStatus;
+import com.project.myproject.enums.EModerationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class TaskReportStatusDto {
     @JsonProperty(value = "status")
-    private EStatus statusName;
+    private EModerationStatus statusName;
     @JsonProperty(value = "reports")
     private long numberOfReports;
 }

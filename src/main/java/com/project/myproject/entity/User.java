@@ -12,9 +12,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Data
 @Entity
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,11 +44,28 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
     @CreationTimestamp
     @JoinColumn(name = "last_visit")
-    private LocalDateTime lastVisit;
-    //@Digits(fraction = 0, integer = 10)
+    private LocalDateTime lastVisit; ///?
+
+
     private String phone;
     private String gender;
     private String image;
+    private double rating;
+
+    @Column(scale = 4)
+    private BigDecimal balance;
+
+    @ManyToOne
+    @JoinColumn(name = "referrer_id")
+    private User referrer;
+
+    @OneToMany(mappedBy = "referrer", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST } )
+    private List<User> referrals = new LinkedList<>();
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rank_id")
+    private Rank rank;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -58,8 +75,6 @@ public class User extends BaseEntity implements UserDetails {
     @JsonIgnore
     private List<Report> reports = new LinkedList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Balance balance = new Balance();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

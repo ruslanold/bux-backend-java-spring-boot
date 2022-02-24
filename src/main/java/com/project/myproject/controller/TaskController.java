@@ -1,14 +1,14 @@
 package com.project.myproject.controller;
 
-import com.project.myproject.dto.TaskCategoryDto;
-import com.project.myproject.dto.TaskCreateDto;
-import com.project.myproject.dto.TaskDto;
-import com.project.myproject.entity.Task;
+import com.project.myproject.dto.*;
 import com.project.myproject.service.ITaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -20,8 +20,13 @@ public class TaskController {
     private ITaskService taskService;
 
     @GetMapping
-    public List<TaskDto> getTasks(){
-        return taskService.getTasks();
+    public List<TaskDto> getTasks(Principal principal){
+        return taskService.getTasks(principal.getName());
+    }
+
+    @GetMapping(value = "/adv")
+    public List<TaskUserDto> getUserTasks(Principal principal){
+        return taskService.getUserTasks(principal.getName());
     }
 
     @GetMapping(value = "/category/{name}")
@@ -30,19 +35,19 @@ public class TaskController {
     }
 
     @GetMapping(value = "/{id}")
-    public TaskDto getTaskById(@PathVariable long id){
-        return taskService.getTaskById(id);
+    public TaskUserReportsDto getTaskById(@PathVariable long id, Principal principal){
+        return taskService.getTaskByIdWithUserReports(id, principal.getName());
     }
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public TaskDto createTask(@RequestBody TaskCreateDto task){
-        return taskService.createTask(task);
+    public TaskCreateUpdateDto createTask(@RequestBody @Valid TaskCreateUpdateDto task, Principal principal){
+        return taskService.createTask(task, principal.getName());
     }
 
     @PutMapping(value = "/{id}")
-    public Task updateTask(@PathVariable long id, @RequestBody Task task){
-        return taskService.updateTask(id, task);
+    public TaskCreateUpdateDto updateTask(@PathVariable long id,@Valid @RequestBody TaskCreateUpdateDto task, Principal principal){
+        return taskService.updateTask(id, task, principal.getName());
     }
 
     @DeleteMapping(value = "/{id}")

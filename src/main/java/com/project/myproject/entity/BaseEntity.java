@@ -5,14 +5,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @MappedSuperclass
 public class BaseEntity {
     @CreationTimestamp
     @JoinColumn(name = "created_at")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     @UpdateTimestamp
     @JoinColumn(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

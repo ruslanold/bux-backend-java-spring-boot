@@ -1,6 +1,10 @@
 package com.project.myproject.service;
 
-public interface IEmailService {
+import com.project.myproject.entity.User;
 
-    void send(String to, String msg);
+import java.util.Locale;
+
+public interface IEmailService {
+    void constructResetTokenEmail(String path, Locale locale, String token, User user);
+    void send(String to,String subject, String msg);
 }
